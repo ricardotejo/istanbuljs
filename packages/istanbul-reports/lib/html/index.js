@@ -92,7 +92,7 @@ const standardLinkMapper = {
     relativePath(source, target) {
         const targetPath = this.getPath(target);
         const sourcePath = path.dirname(this.getPath(source));
-        return path.relative(sourcePath, targetPath);
+        return path.posix.relative(sourcePath, targetPath).replace(/index\.html$/, '');
     },
 
     assetPath(node, name) {
@@ -128,7 +128,7 @@ class HtmlReport {
         const linkPath = nodePath.map(ancestor => {
             const target = this.linkMapper.relativePath(node, ancestor);
             const name = ancestor.getRelativeName() || 'All files';
-            return '<a href="' + target + '">' + name + '</a>';
+            return '<a href="' + (target == '' ? '/' + name : target) + '">' + name + '</a>'; // «rt»
         });
 
         linkPath.reverse();
